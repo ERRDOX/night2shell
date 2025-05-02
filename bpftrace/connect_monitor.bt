@@ -1,0 +1,18 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * sudo bpftrace -e 'tracepoint:syscalls:sys_enter_connect { @conns[comm] = count(); printf("%s is trying to connect!\n", comm); }'
+ * Monitor connect system calls across the system
+ * Usage: sudo bpftrace connect_monitor.bt
+ */
+
+tracepoint:syscalls:sys_enter_connect {
+    @conns[comm] = count();
+    printf("%s is trying to connect!\n", comm);
+}
+
+interval:s:5 {
+    printf("\nConnection attempts in the last 5 seconds:\n");
+    print(@conns);
+    clear(@conns);
+} 

@@ -1,0 +1,16 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * sudo bpftrace -e 'tracepoint:syscalls:sys_enter_openat { @[comm] = count(); }' 
+ * Monitor openat system calls across the system
+ * Usage: sudo bpftrace openat_monitor.bt
+ */
+
+tracepoint:syscalls:sys_enter_openat {
+    @[comm] = count();
+}
+
+interval:s:5 {
+    print(@);
+    clear(@);
+} 

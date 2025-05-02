@@ -1,0 +1,19 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * ⚠️ WARNING: This script is currently not working
+ * The IP address conversion needs to be fixed
+ * 
+ * Detailed monitor for connect system calls with IP address breakdown
+ * Usage: sudo bpftrace connect_detailed.bt
+ */
+
+tracepoint:syscalls:sys_enter_connect
+/args->addrlen == 16/  // IPv4
+{
+    printf("%s is connecting to %s:%d\n",
+           comm,
+           ntop(args->uservaddr),
+           args->uservaddr->sin_port);
+}
+'

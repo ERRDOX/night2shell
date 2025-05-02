@@ -1,0 +1,17 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * sudo bpftrace -e 'tracepoint:syscalls:sys_enter_sendto { @[comm] = count(); }'
+ * Monitor sendto system calls across the system
+ * Usage: sudo bpftrace sendto_monitor.bt
+ */
+
+tracepoint:syscalls:sys_enter_sendto {
+    @[comm] = count();
+}
+
+interval:s:5 {
+    printf("\nSendto operations in the last 5 seconds:\n");
+    print(@);
+    clear(@);
+} 

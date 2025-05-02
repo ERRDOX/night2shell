@@ -1,0 +1,14 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * sudo bpftrace -e 'tracepoint:syscalls:sys_enter_write { if (args->count > 1048576) { printf("%s writing %d bytes to fd %d\n", comm, args->count, args->fd); }}'
+ * Monitor large write operations (>1MB) across the system
+ * Usage: sudo bpftrace large_write_monitor.bt
+ */
+
+tracepoint:syscalls:sys_enter_write {
+    if (args->count > 1048576) {
+        printf("%s writing %d bytes to fd %d\n", comm, args->count, args->fd);
+        printf("File path: %s\n", str(args->fd));
+    }
+}

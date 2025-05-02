@@ -1,0 +1,16 @@
+#!/usr/bin/env bpftrace
+
+/*
+ * Monitor connection attempts by process ID
+ * Usage: sudo bpftrace connect_scanner.bt
+ */
+
+tracepoint:syscalls:sys_enter_connect {
+    @scanner[pid] = count();
+}
+
+interval:s:10 {
+    printf("\nConnection attempts by PID in the last 10 seconds:\n");
+    print(@scanner);
+    clear(@scanner);
+} 
